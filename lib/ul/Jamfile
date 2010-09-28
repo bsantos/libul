@@ -1,0 +1,33 @@
+#==============================================================================
+# Authors : Bruno Santos <bsantos@av.it.pt>
+# -----------------------------------------------------------------------------
+# UL - Utilities Library
+#
+# Copyright (C) 2010 Bruno Santos <bsantos@av.it.pt>
+#
+# Distributed under the Boost Software License, Version 1.0.
+#    (See accompanying file LICENSE_1_0.txt or copy at
+#          http://www.boost.org/LICENSE_1_0.txt)
+#==============================================================================
+
+project ul
+	;
+
+alias source-list
+	: debug_linux.cpp
+	: <target-os>linux
+	;
+
+alias source-list
+	: debug_win32.cpp
+	: <target-os>windows
+	;
+
+explicit source-list ;
+
+lib ul
+	: ul.cpp
+	  rbtree_hook.cpp
+	  source-list
+	  /boost//system
+	;

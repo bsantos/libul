@@ -1,0 +1,24 @@
+#==============================================================================
+# Authors : Bruno Santos <bsantos@av.it.pt>
+# -----------------------------------------------------------------------------
+# UL - Utilities Library
+#
+# Copyright (C) 2010 Bruno Santos <bsantos@av.it.pt>
+#
+# Distributed under the Boost Software License, Version 1.0.
+#    (See accompanying file LICENSE_1_0.txt or copy at
+#          http://www.boost.org/LICENSE_1_0.txt)
+#==============================================================================
+
+import boost ;
+
+project ul
+	: requirements
+		<include>inc
+		<link>static
+	: build-dir bin.v2
+	;
+
+boost.use-project 1.42 ;
+
+build-project lib/ul//ul ;
