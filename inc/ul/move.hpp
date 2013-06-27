@@ -1,9 +1,7 @@
 //=============================================================================
-// Brief : Move Emulation
-// ----------------------------------------------------------------------------
 // UL - Utilities Library
 //
-// Copyright (C) 2009-2010 Bruno Santos <bsantos@av.it.pt>
+// Copyright (C) 2009-2013 Bruno Santos <bsantos@cppdev.net>
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -15,40 +13,35 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 #include <ul/base.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/type_traits/is_convertible.hpp>
+#include <boost/type_traits/remove_reference.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace ul {
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class T>
-struct move_ : public T {
-	typedef move_<T> self_type;
+class rv_ {
+	typedef typename boost::remove_reference<T>::type type;
 
-	move_(const self_type& r)
-		: T(const_cast<self_type&>(r))
-	{ }
+	type& _ref;
+
+public:
+    explicit rv_(type& ref)
+        : _ref(ref)
+    { }
+
+    T* operator->() { return &_ref; }
+    T* operator&()  { return &_ref; }
 };
 
 template<class T>
-inline typename boost::enable_if<boost::is_convertible<move_<T>, T>, move_<T>&>::type move(T& from)
+inline T move(T& from)
 {
-	return static_cast<move_<T>&>(from);
+	return T(rv_<T>(from));
 }
-
-///////////////////////////////////////////////////////////////////////////////
-#define UL_MOVABLE_BUT_NOT_COPYABLE(TYPE)            \
-	private:                                         \
-	TYPE(TYPE &);                                    \
-	TYPE& operator=(TYPE &);                         \
-	public:                                          \
-	operator ul::move_<TYPE>&()                      \
-	{ return static_cast<ul::move_<TYPE>&>(*this); } \
-	private:
 
 ///////////////////////////////////////////////////////////////////////////////
 } /* namespace ul */
 
-// EOF ////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 #endif /* UL_MOVE__HPP_ */

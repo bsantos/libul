@@ -1,9 +1,7 @@
 //=============================================================================
-// Brief : Exception
-// ----------------------------------------------------------------------------
 // UL - Utilities Library
 //
-// Copyright (C) 2009-2010 Bruno Santos <bsantos@av.it.pt>
+// Copyright (C) 2009-2013 Bruno Santos <bsantos@cppdev.net>
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -14,16 +12,19 @@
 #define UL_EXCEPTION__HPP_
 
 ///////////////////////////////////////////////////////////////////////////////
+#include <ul/base.hpp>
 #include <boost/exception/exception.hpp>
+#include <boost/throw_exception.hpp>
 #include <exception>
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace ul {
 
 ///////////////////////////////////////////////////////////////////////////////
-class exception
-	: virtual public std::exception, virtual public boost::exception {
-};
+using boost::throw_exception;
+
+///////////////////////////////////////////////////////////////////////////////
+class exception : virtual public std::exception, virtual public boost::exception { };
 
 ///////////////////////////////////////////////////////////////////////////////
 } /* namespace ul */

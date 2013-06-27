@@ -1,9 +1,7 @@
 //=============================================================================
-// Brief : Base Types and Definitions
-//-----------------------------------------------------------------------------
 // UL - Utilities Library
 //
-// Copyright (C) 2005-2010 Bruno Santos <bsantos@av.it.pt>
+// Copyright (C) 2005-2013 Bruno Santos <bsantos@cppdev.net>
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -20,8 +18,9 @@
 #include <boost/static_assert.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
-#define UL_SCOPED(def)     switch(def) case 0: default:
 #define UL_COUNT_OF(array) (sizeof(array) / sizeof(array[0]))
+#define UL_CONCAT_(a, b)   a ## b
+#define UL_CONCAT(a, b)    UL_CONCAT_(a, b)
 
 #ifdef BOOST_HAS_STATIC_ASSERT
 #	define UL_STATIC_ASSERT(exp, reason) static_assert(exp, reason)
@@ -42,22 +41,19 @@
 #endif
 
 #if defined(__GNUC__)
-#	define UL_RETURN_ADDRESS __builtin_return_address(0)
-#elif defined(BOOST_MSVC)
-	extern "C" void* _ReturnAddress();
-
-#	define UL_RETURN_ADDRESS _ReturnAddress()
+#	define UL_BREAKPOINT __builtin_trap()
 #else
-#	define UL_RETURN_ADDRESS 0
+#	define UL_BREAKPOINT *(volatile char *)0 = *(volatile char *)0
 #endif
 
-#if defined(__GNUC__)
-#	define UL_DEPRECATE __attribute__((deprecated))
-#elif defined(BOOST_MSVC)
-#	define UL_DEPRECATE __declspec(deprecated)
-#else
-#	define UL_DEPRECATE
-#endif
+#define UL_UNDEFINED_BOOL                              \
+	struct undefined_bool_t {                          \
+		void true_() {}                                \
+	};                                                 \
+	typedef void (undefined_bool_t::*undefined_bool)()
+
+#define UL_UNDEFINED_BOOL_TRUE  &undefined_bool_t::true_
+#define UL_UNDEFINED_BOOL_FALSE 0
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace ul {
@@ -88,10 +84,17 @@ typedef boost::int64_t     sint64;
 typedef boost::intmax_t    sintmax;
 typedef boost::uintmax_t   uintmax;
 
-///////////////////////////////////////////////////////////////////////////////
-struct nullptr_t { template<class T> operator T*() const { return 0; } };
+typedef intptr_t  sintptr;
+typedef uintptr_t uintptr;
 
-static const nullptr_t nullptr = nullptr_t();
+///////////////////////////////////////////////////////////////////////////////
+#ifdef BOOST_NO_NULLPTR
+	struct nullptr_t { template<class T> operator T*() const { return 0; } };
+
+	static const nullptr_t nullptr = nullptr_t();
+#else
+	typedef decltype(nullptr) nullptr_t;
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 template<class MemberT, class ParentT>
@@ -112,7 +115,14 @@ inline ParentT* parent_of(MemberT* member, MemberT ParentT::* Member)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+template<class T, size_t N>
+inline size_t count_of(T (&)[N])
+{
+	return N;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 } /* namespace ul */
 
-// EOF ////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 #endif /* UL_BASE__HPP_ */
