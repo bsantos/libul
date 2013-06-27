@@ -11,21 +11,8 @@
 project ul
 	;
 
-alias source-list
-	: debug_linux.cpp
-	: <target-os>linux
-	;
-
-alias source-list
-	: debug_win32.cpp
-	: <target-os>windows
-	;
-
-explicit source-list ;
-
 lib ul
-	: ul.cpp
+	: debug.cpp
 	  rbtree_node.cpp
-	  source-list
 	  /boost//system
 	;

@@ -1,14 +1,15 @@
 //=============================================================================
-// Brief : Debug Helpers (platform dependent implementation - linux)
-// ----------------------------------------------------------------------------
 // UL - Utilities Library
 //
-// Copyright (C) 2008-2010 Bruno Santos <bsantos@av.it.pt>
+// Copyright (C) 2008-2013 Bruno Santos <bsantos@cppdev.net>
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 //=============================================================================
+
+//NOTE: legacy debug code, not used anymore but it has some usefull stuff to be
+//      refactore into utilities
 
 #include <ul/debug.hpp>
 #include <ul/list_hook.hpp>
@@ -446,54 +447,43 @@ void dump_module_list(module_list& ml)
 
 void signal_handler(int, siginfo_t* info, void* context)
 {
-	struct sigcontext* mctx = (struct sigcontext*) &((ucontext_t*) context)->uc_mcontext;
-	ul::crash_ctx ctx;
+	struct sigcontext* ctx = (struct sigcontext*) &((ucontext_t*) context)->uc_mcontext;
+	char buff[20] = "SIG: ";
+	const char* expr = buf;
 
 	memset(&ctx, 0, sizeof(ctx));
 	switch(info->si_signo) {
 	case SIGFPE:
-		ctx.code = ul::bug_floting_point_exception;
+		expr = "SIGFPE: floating point exception";
 		break;
 
 	case SIGILL:
-		ctx.code = ul::bug_invalid_opcode;
+		expr = "SIGILL: invalid opcode";
 		break;
 
 	case SIGINT:
-		ctx.code = ul::bug_terminal_interrupt;
+		expr = "SIGINT: terminal interrupt";
 		break;
 
 	case SIGSEGV:
-		ctx.code = ul::bug_page_fault;
+		expr = "SIGSEGV: read/write page fault";
 		break;
 
 	case SIGTRAP:
-		ctx.code = ul::bug_breakpoint;
+		expr = "SIGTRAP: breakpoint";
 		break;
 
 	default:
-		ctx.code = ul::bug_on;
+		std::itoa(info->si_signo, buf + 5, 10);
 	}
 
 #ifdef __i386__
-	ctx.address = (void*) mctx->eip;
+	void* address = (void*) ctx->eip;
 #elif __amd64__
-	ctx.address = (void*) mctx->rip;
+	void* address = (void*) ctx->rip;
 #endif
-	ctx.context = mctx;
-	ul::crash(ctx);
-}
 
-void dump_checkpoints()
-{
-	if (!checkpoint::top())
-		return;
-
-	std::fprintf(stderr, "\n"
-						 "== checkpoints ==\n");
-	for (ul::checkpoint* i = checkpoint::top(); i != ul::nullptr; i = i->previous()) {
-		std::fprintf(stderr,	"%s (%s:%u)\n", i->expression(), i->file(), i->line());
-	}
+	ul::crash(reason, __function__, __FILE__, __LINE__, address, ctx);
 }
 
 void dump_context(void* context)
@@ -574,10 +564,10 @@ void setup_crash_handler()
 	sigaction(SIGINT, &handler, nullptr);
 	sigaction(SIGSEGV, &handler, nullptr);
 	sigaction(SIGTRAP, &handler, nullptr);
-	//SIGSTKFLT
 }
 
-void crash(const crash_ctx& ctx)
+void crash_impl(const char* expression, const char* function, const char* file, uint line,
+                void* address, void* context)
 {
 	module_list ml;
 	module* m;
