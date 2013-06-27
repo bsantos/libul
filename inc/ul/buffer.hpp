@@ -1,9 +1,7 @@
 //=============================================================================
-// Brief : Buffer
-// ----------------------------------------------------------------------------
 // UL - Utilities Library
 //
-// Copyright (C) 2008-2010 Bruno Santos <bsantos@av.it.pt>
+// Copyright (C) 2008-2013 Bruno Santos <bsantos@cppdev.net>
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -17,7 +15,6 @@
 #include <ul/base.hpp>
 #include <boost/utility.hpp>
 #include <boost/type_traits/is_integral.hpp>
-#include <boost/throw_exception.hpp>
 #include <cstdlib>
 
 ///////////////////////////////////////////////////////////////////////////////
