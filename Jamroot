@@ -1,24 +1,42 @@
 #==============================================================================
-# Authors : Bruno Santos <bsantos@av.it.pt>
-# -----------------------------------------------------------------------------
 # UL - Utilities Library
 #
-# Copyright (C) 2010 Bruno Santos <bsantos@av.it.pt>
+# Copyright (C) 2010-2013 Bruno Santos <bsantos@cppdev.net>
 #
 # Distributed under the Boost Software License, Version 1.0.
 #    (See accompanying file LICENSE_1_0.txt or copy at
 #          http://www.boost.org/LICENSE_1_0.txt)
 #==============================================================================
 
-import boost ;
+import os ;
+import option ;
+import path ;
 
-project ul
+project libul
 	: requirements
 		<include>inc
 		<link>static
+	: usage-requirements
+		<include>inc
 	: build-dir bin.v2
 	;
 
-boost.use-project 1.42 ;
+#
+# Import the boost project
+#
+path-constant TOP : . ;
 
-build-project lib/ul//ul ;
+local boost-major = 1 ;
+local boost-minor = 49 ;
+local boost-patch = 0 ;
+local boost-root = [ path.join $(TOP) ../boost_$(boost-major)_$(boost-minor)_$(boost-patch) ] ;
+
+boost-root ?= [ os.environ BOOST_ROOT ] ;
+boost-root ?= [ option.get boost-root ] ;
+
+use-project boost : $(boost-root) ;
+
+#
+# Build
+#
+build-project lib/ul ;
