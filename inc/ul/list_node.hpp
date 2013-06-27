@@ -1,17 +1,15 @@
 //=============================================================================
-// Brief : Intrusive Double Linked List Hook
-// ----------------------------------------------------------------------------
 // UL - Utilities Library
 //
-// Copyright (C) 2006-2010 Bruno Santos <bsantos@av.it.pt>
+// Copyright (C) 2006-2013 Bruno Santos <bsantos@cppdev.net>
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 //=============================================================================
 
-#ifndef UL_LIST_HOOK__HPP_
-#define UL_LIST_HOOK__HPP_
+#ifndef UL_LIST_NODE__HPP_
+#define UL_LIST_NODE__HPP_
 
 ///////////////////////////////////////////////////////////////////////////////
 #include <ul/base.hpp>
@@ -24,10 +22,12 @@ namespace ul {
  * \brief Defines a raw double linked list hook class to support custom
  *        implementations of algorithms based on list.
  */
-struct list_hook {
-	void init() { next = prev = this; }
+struct list_node {
+	list_node()
+		: next(this), prev(this)
+	{ }
 
-	void push_front(list_hook* node)
+	void push_front(list_node* node)
 	{
 		next->prev = node;
 		node->prev = this;
@@ -35,7 +35,7 @@ struct list_hook {
 		next = node;
 	}
 
-	void push_back(list_hook* node)
+	void push_back(list_node* node)
 	{
 		prev->next = node;
 		node->next = this;
@@ -43,27 +43,27 @@ struct list_hook {
 		prev = node;
 	}
 
-	list_hook* pop_front()
+	list_node* pop_front()
 	{
-		list_hook* node = next;
+		list_node* node = next;
 		node->remove();
 		return node;
 	}
 
-	list_hook* pop_back()
+	list_node* pop_back()
 	{
-		list_hook* node = prev;
+		list_node* node = prev;
 		node->remove();
 		return node;
 	}
 
-	list_hook* front() { return prev; }
-	list_hook* back()  { return next; }
+	list_node* front() const { return next; }
+	list_node* back() const  { return prev; }
 
-	void swap(list_hook& y)
+	void swap(list_node& y)
 	{
-		list_hook* n = next;
-		list_hook* p = prev;
+		list_node* n = next;
+		list_node* p = prev;
 
 		next = y.next;
 		prev = y.prev;
@@ -73,7 +73,7 @@ struct list_hook {
 
 	void reverse()
 	{
-		list_hook* n = next;
+		list_node* n = next;
 
 		next = prev;
 		prev = n;
@@ -88,12 +88,12 @@ struct list_hook {
 	bool empty() const { return (next == this); }
 
 
-	list_hook* next;
-	list_hook* prev;
+	list_node* next;
+	list_node* prev;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 } /* namespace ul */
 
 // EOF ////////////////////////////////////////////////////////////////////////
-#endif /* UL_LIST_HOOK__HPP_ */
+#endif /* UL_LIST_NODE__HPP_ */

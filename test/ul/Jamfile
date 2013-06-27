@@ -8,24 +8,20 @@
 #          http://www.boost.org/LICENSE_1_0.txt)
 #==============================================================================
 
-project ul
+project ul/test
 	;
 
-alias source-list
-	: debug_linux.cpp
-	: <target-os>linux
+compile
+	include.cpp
+	../../lib/ul//ul
 	;
 
-alias source-list
-	: debug_win32.cpp
-	: <target-os>windows
+link
+	rbtree.cpp
+	../../lib/ul//ul
 	;
 
-explicit source-list ;
-
-lib ul
-	: ul.cpp
-	  rbtree_node.cpp
-	  source-list
-	  /boost//system
+link
+	list.cpp
+	../../lib/ul//ul
 	;
