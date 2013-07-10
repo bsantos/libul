@@ -17,6 +17,19 @@
 #include <boost/cstdint.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#	define UL_LITTLE_ENDIAN
+#endif
+
+#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+#	define UL_BIG_ENDIAN
+#endif
+
+#if  (defined(UL_LITTLE_ENDIAN) && defined(UL_BIG_ENDIAN)) || \
+	!(defined(UL_LITTLE_ENDIAN) || defined(UL_BIG_ENDIAN))
+#	error "Unable to determine endianess, you must support/fix it"
+#endif
+
 #if defined(__clang__) || defined(__GCC__)
 	#define UL_LIKELY(exp)   __builtin_expect(static_cast<bool>(exp), true)
 	#define UL_UNLIKELY(exp) __builtin_expect(static_cast<bool>(exp), false)
@@ -83,6 +96,24 @@ typedef intptr_t  sintptr;
 typedef uintptr_t uintptr;
 
 ///////////////////////////////////////////////////////////////////////////////
+constexpr bool is_little_endian()
+{
+#ifdef UL_LITTLE_ENDIAN
+	return true;
+#else
+	return false;
+#endif
+}
+
+constexpr bool is_big_endian()
+{
+#ifdef UL_BIG_ENDIAN
+	return true;
+#else
+	return false;
+#endif
+}
+
 template<class T, size_t N>
 constexpr size_t count_of(T (&)[N])
 {
