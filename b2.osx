@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo b2 cxxflags=-stdlib=libc++ cxxflags=-std=gnu++11 $@
+b2 cxxflags=-stdlib=libc++ cxxflags=-std=gnu++11 $@
