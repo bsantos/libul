@@ -17,3 +17,8 @@ lib ul
 	  unicode.cpp
 	  /boost//system
 	;
+
+lib ul_gfx
+	: gfx/font_osx.cpp
+	  ul
+	;

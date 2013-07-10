@@ -41,5 +41,6 @@ use-project boost : $(boost-root) ;
 #
 install libul
 	: lib/ul//ul
+	  lib/ul//ul_gfx
 	: <location>lib
 	;
