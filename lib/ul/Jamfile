@@ -15,6 +15,7 @@ lib ul
 	: debug.cpp
 	  rbtree_node.cpp
 	  unicode.cpp
+	  xml.cpp
 	  /boost//system
 	;
 
