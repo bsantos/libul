@@ -19,8 +19,9 @@ lib ul
 	;
 
 lib ul_gfx
-	: gfx/font_osx.cpp
+	: gfx/canvas_osx.cpp
 	  gfx/matrix.cpp
+	  gfx/font_osx.cpp
 	  gfx/glyphs_osx.cpp
 	  ul
 	;
