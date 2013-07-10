@@ -20,5 +20,6 @@ lib ul
 
 lib ul_gfx
 	: gfx/font_osx.cpp
+	  gfx/matrix.cpp
 	  ul
 	;
