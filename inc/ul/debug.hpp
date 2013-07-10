@@ -58,7 +58,7 @@ void panic(bug_info const& info, void* address, void* context);
     } while(0)
 
 #ifndef NDEBUG
-#	define UL_ASSERT(exp) UL_BUG_ON(exp, #exp)
+#	define UL_ASSERT(exp) UL_BUG_ON(!(exp), #exp)
 #else
 #	define UL_ASSERT(exp) ((void) 0)
 #endif
