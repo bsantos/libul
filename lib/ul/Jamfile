@@ -14,5 +14,6 @@ project ul
 lib ul
 	: debug.cpp
 	  rbtree_node.cpp
+	  unicode.cpp
 	  /boost//system
 	;

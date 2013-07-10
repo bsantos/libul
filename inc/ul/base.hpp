@@ -138,6 +138,11 @@ constexpr Parent* parent_of(Member* member, Member Parent::* MemberPtr)
 	                : nullptr;
 }
 
+
+struct nothrow_t { };
+
+static constexpr nothrow_t nothrow = nothrow_t();
+
 ///////////////////////////////////////////////////////////////////////////////
 } /* namespace ul */
 
