@@ -38,9 +38,9 @@ public:
 	typedef std::reverse_iterator<iterator>       reverse_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-	rbtree() : _root(nullptr)
+	rbtree()
+		: _root(nullptr)
 	{ }
-
 
 	iterator insert_equal(reference elem)
 	{
