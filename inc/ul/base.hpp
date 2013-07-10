@@ -15,37 +15,32 @@
 #include <cstddef>
 #include <boost/config.hpp>
 #include <boost/cstdint.hpp>
-#include <boost/static_assert.hpp>
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(__clang__) || defined(__GCC__)
+	#define UL_LIKELY(exp)   __builtin_expect(static_cast<bool>(exp), true)
+	#define UL_UNLIKELY(exp) __builtin_expect(static_cast<bool>(exp), false)
+#else
+	#define UL_LIKELY(exp)   static_cast<bool>(exp)
+	#define UL_UNLIKELY(exp) static_cast<bool>(exp)
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//deprecated: use count_of or std::begin/std::end
 #define UL_COUNT_OF(array) (sizeof(array) / sizeof(array[0]))
 #define UL_CONCAT_(a, b)   a ## b
 #define UL_CONCAT(a, b)    UL_CONCAT_(a, b)
 
-#ifdef BOOST_HAS_STATIC_ASSERT
-#	define UL_STATIC_ASSERT(exp, reason) static_assert(exp, reason)
-#else
-#	define UL_STATIC_ASSERT(exp, reason) BOOST_STATIC_ASSERT(exp)
-#endif
-
-#if defined(__GNUC__)
-#	define UL_LIKELY(x) __builtin_expect(!!(x), 1)
-#else
-#	define UL_LIKELY(x) (x)
-#endif
-
-#if defined(__GNUC__)
-#	define UL_UNLIKELY(x) __builtin_expect(!!(x), 0)
-#else
-#	define UL_UNLIKELY(x) (x)
-#endif
+//deprecated: use C++11 static_assert
+#define UL_STATIC_ASSERT(exp, reason) static_assert(exp, reason)
 
 #if defined(__GNUC__)
 #	define UL_BREAKPOINT __builtin_trap()
 #else
-#	define UL_BREAKPOINT *(volatile char *)0 = *(volatile char *)0
+#	define UL_BREAKPOINT *(volatile char *)0xbadcafe = 0
 #endif
 
+//deprecated: use C++11 explicit operator bool
 #define UL_UNDEFINED_BOOL                              \
 	struct undefined_bool_t {                          \
 		void true_() {}                                \
@@ -88,37 +83,28 @@ typedef intptr_t  sintptr;
 typedef uintptr_t uintptr;
 
 ///////////////////////////////////////////////////////////////////////////////
-#ifdef BOOST_NO_NULLPTR
-	struct nullptr_t { template<class T> operator T*() const { return 0; } };
-
-	static const nullptr_t nullptr = nullptr_t();
-#else
-	typedef decltype(nullptr) nullptr_t;
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-template<class MemberT, class ParentT>
-inline MemberT* member_of(ParentT* parent, MemberT ParentT::* Member)
-{
-	return &(parent->*Member);
-}
-
-template<class ParentT, class MemberT>
-inline ParentT* parent_of(MemberT* member, MemberT ParentT::* Member)
-{
-	ParentT* parent = 0;
-
-	if (!member)
-		return nullptr;
-
-	return reinterpret_cast<ParentT*>(reinterpret_cast<char*>(member) - reinterpret_cast<const char*>(&(parent->*Member)));
-}
-
-///////////////////////////////////////////////////////////////////////////////
 template<class T, size_t N>
-inline size_t count_of(T (&)[N])
+constexpr size_t count_of(T (&)[N])
 {
 	return N;
+}
+
+template<class Member, class Parent>
+constexpr Member* member_of(Parent* parent, Member Parent::* MemberPtr)
+{
+	return &(parent->*MemberPtr);
+}
+
+template<class Parent, class Member>
+constexpr Parent* parent_of(Member* member, Member Parent::* MemberPtr)
+{
+	return (member) ? reinterpret_cast<Parent*>(
+	                        reinterpret_cast<char const volatile*>(member)
+	                      - reinterpret_cast<char const volatile*>(
+	                            member_of(static_cast<Parent*>(nullptr), MemberPtr)
+	                        )
+	                  )
+	                : nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
