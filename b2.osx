@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo b2 cxxflags=-stdlib=libc++ cxxflags=-std=gnu++11 $@
-b2 cxxflags=-stdlib=libc++ cxxflags=-std=gnu++11 $@
+echo b2 cxxflags=-stdlib=libc++ cxxflags=-std=c++11 cxxflags=-ftemplate-depth=1024 $@
+b2 cxxflags=-stdlib=libc++ cxxflags=-std=c++11 cxxflags=-ftemplate-depth=1024 $@
