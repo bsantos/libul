@@ -27,7 +27,7 @@ project libul
 path-constant TOP : . ;
 
 local boost-major = 1 ;
-local boost-minor = 49 ;
+local boost-minor = 56 ;
 local boost-patch = 0 ;
 local boost-root = [ path.join $(TOP) ../boost_$(boost-major)_$(boost-minor)_$(boost-patch) ] ;
 
@@ -41,6 +41,5 @@ use-project boost : $(boost-root) ;
 #
 install libul
 	: lib/ul//ul
-	  lib/ul//ul_gfx
 	: <location>lib
 	;

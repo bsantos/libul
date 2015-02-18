@@ -13,15 +13,17 @@
 #ifndef UL_XML__HPP_
 #define UL_XML__HPP_
 
+#define BOOST_SPIRIT_USE_PHOENIX_V3
+
 ///////////////////////////////////////////////////////////////////////////////
 #include <ul/base.hpp>
 #include <boost/spirit/home/qi.hpp>
 #include <boost/spirit/home/support/iterators/line_pos_iterator.hpp>
-#include <boost/spirit/home/phoenix/core.hpp>
-#include <boost/spirit/home/phoenix/operator.hpp>
-#include <boost/spirit/home/phoenix/fusion.hpp>
-#include <boost/spirit/home/phoenix/stl.hpp>
-#include <boost/spirit/home/phoenix/object.hpp>
+#include <boost/phoenix/core.hpp>
+#include <boost/phoenix/operator.hpp>
+#include <boost/phoenix/fusion.hpp>
+#include <boost/phoenix/stl.hpp>
+#include <boost/phoenix/object.hpp>
 #include <boost/fusion/adapted/struct/adapt_struct.hpp>
 #include <boost/variant/recursive_variant.hpp>
 #include <boost/range/iterator_range.hpp>
@@ -144,8 +146,8 @@ struct parser_grammar : qi::grammar<Iterator, doc(), skipper_grammar<Iterator> >
              >> +(qi::standard::alnum | ':' | '_' | '-' | '.')
 		      ;
 
-		stag %= '<'
-		     >> !('/' | qi::no_case["xml"])
+		stag %= ('<'
+		     >> !('/' | qi::no_case["xml"]))
 		      > name
 		      ;
 

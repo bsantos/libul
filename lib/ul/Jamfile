@@ -18,11 +18,3 @@ lib ul
 	  xml.cpp
 	  /boost//system
 	;
-
-lib ul_gfx
-	: gfx/canvas_osx.cpp
-	  gfx/matrix.cpp
-	  gfx/font_osx.cpp
-	  gfx/glyphs_osx.cpp
-	  ul
-	;
