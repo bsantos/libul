@@ -96,6 +96,9 @@ typedef intptr_t  sintptr;
 typedef uintptr_t uintptr;
 
 ///////////////////////////////////////////////////////////////////////////////
+constexpr struct no_init_t { } no_init = { };
+constexpr struct static_init_t { } static_init = { };
+
 constexpr bool is_little_endian()
 {
 #ifdef UL_LITTLE_ENDIAN

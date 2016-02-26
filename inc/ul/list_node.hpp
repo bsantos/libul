@@ -23,9 +23,26 @@ namespace ul {
  *        implementations of algorithms based on list.
  */
 struct list_node {
-	list_node()
+	constexpr list_node()
 		: next(this), prev(this)
 	{ }
+
+	list_node(no_init_t)
+	{ }
+
+	list_node(static_init_t)
+	{
+		init(static_init);
+	}
+
+	void init(static_init_t)
+	{
+		if (!next)
+		{
+			next = this;
+			prev = this;
+		}
+	}
 
 	void push_front(list_node* node)
 	{
@@ -79,10 +96,15 @@ struct list_node {
 		prev = n;
 	}
 
-	void remove()
+	void unlink()
 	{
 		prev->next = next;
 		next->prev = prev;
+	}
+
+	void remove()
+	{
+		unlink();
 	}
 
 	bool empty() const { return (next == this); }
