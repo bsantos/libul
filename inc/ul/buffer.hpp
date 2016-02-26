@@ -16,6 +16,7 @@
 #include <boost/utility.hpp>
 #include <boost/type_traits/is_integral.hpp>
 #include <cstdlib>
+#include <new>
 
 ///////////////////////////////////////////////////////////////////////////////
 namespace ul {
